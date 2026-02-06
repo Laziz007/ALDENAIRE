@@ -6,7 +6,7 @@ import { createLinkToken } from "@/lib/telegram-store";
 const BOT_USERNAME = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "";
 
 export async function POST() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }

@@ -4,7 +4,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { verifyCode } from "@/lib/telegram-store";
 
 export async function POST(req: Request) {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
@@ -17,13 +17,19 @@ export async function POST(req: Request) {
 
   const ok = verifyCode(userId, code);
   if (!ok) {
-    return NextResponse.json({ error: "Invalid or expired code" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid or expired code" },
+      { status: 400 }
+    );
   }
 
-  await clerkClient.users.updateUserMetadata(userId, {
+  // 🔴 MANA SHU QATOR MUHIM
+  const clerk = await clerkClient();
+
+  await clerk.users.updateUserMetadata(userId, {
     privateMetadata: {
-      telegramVerifiedAt: new Date().toISOString()
-    }
+      telegramVerifiedAt: new Date().toISOString(),
+    },
   });
 
   return NextResponse.json({ ok: true });

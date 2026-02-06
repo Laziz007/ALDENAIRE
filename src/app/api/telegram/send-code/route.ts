@@ -5,7 +5,7 @@ import { sendMessage } from "@/lib/telegram";
 import { createVerificationCode, getTelegramLink } from "@/lib/telegram-store";
 
 export async function POST() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
